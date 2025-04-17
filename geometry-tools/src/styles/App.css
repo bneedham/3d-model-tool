@@ -1,0 +1,163 @@
+.app {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  position: relative;
+  overflow: hidden;
+}
+
+.sidebar {
+  min-width: 200px;
+  max-width: 600px;
+  background-color: #f5f5f5;
+  border-right: 1px solid #ddd;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.viewport {
+  flex: 1;
+  background-color: #eee;
+  position: relative;
+  overflow: hidden;
+}
+
+.primitive-controls {
+  padding: 1rem;
+  border-bottom: 1px solid #ddd;
+}
+
+/* New button container styling */
+.primitive-buttons {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+/* Enhanced button styling */
+.primitive-button {
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: 4px;
+  background-color: #1a73e8;
+  color: white;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.primitive-button:hover {
+  background-color: #1557b0;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transform: translateY(-1px);
+}
+
+.primitive-button:active {
+  background-color: #0d47a1;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  transform: translateY(1px);
+}
+
+.primitive-button:focus {
+  outline: 2px solid #4285f4;
+  outline-offset: 2px;
+}
+
+.primitive-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.model-tree {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem;
+}
+
+.tree-node {
+  padding: 0.75rem;
+  margin: 0.25rem 0;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.2s;
+  background-color: white;
+  border: 1px solid #e0e0e0;
+}
+
+.tree-node:hover {
+  background-color: #f0f7ff;
+  border-color: #1a73e8;
+}
+
+.tree-node.selected {
+  background-color: #1a73e8;
+  color: white;
+  border-color: #1557b0;
+}
+
+.tree-node.drop-target {
+  background-color: #e8f0fe;
+  border: 2px dashed #1a73e8;
+}
+
+.node-children {
+  margin-left: 1.5rem;
+  padding-left: 1rem;
+  border-left: 2px solid #e0e0e0;
+}
+
+/* Heading styles */
+h3 {
+  color: #202124;
+  margin: 0 0 1rem 0;
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+
+/* Focus visible utility */
+:focus-visible {
+  outline: 2px solid #4285f4;
+  outline-offset: 2px;
+}
+
+/* Style the resize handle */
+.resize-handle {
+  width: 4px;
+  height: 100%;
+  position: relative;
+  left: 0;
+  top: 0;
+  cursor: ew-resize;
+  background: #ddd;
+  z-index: 10;
+}
+
+.resize-handle:hover,
+.resize-handle:active {
+  background: #1a73e8;
+}
+
+/* Add visual feedback when resizing */
+.app.resizing {
+  cursor: ew-resize;
+}
+
+.app.resizing .viewport {
+  pointer-events: none;
+}
+
+/* Ensure Canvas takes full viewport size */
+.viewport > canvas {
+  width: 100% !important;
+  height: 100% !important;
+} 
