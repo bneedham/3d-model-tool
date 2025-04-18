@@ -1,17 +1,36 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { useThree } from '@react-three/fiber';
-import { OrbitControls } from '@react-three/drei';
+import { OrbitControls, Environment } from '@react-three/drei';
 import { ModelNode } from '../types/ModelTypes';
+import TransformControls from './TransformControls';
+import * as THREE from 'three';
 
 interface PrimitiveProps {
   node: ModelNode;
   isSelected: boolean;
   onClick: () => void;
+  onTransformChange: (
+    id: string,
+    type: 'position' | 'rotation' | 'scale',
+    value: [number, number, number]
+  ) => void;
+  onMaterialChange?: (
+    id: string,
+    materialProps: Partial<MaterialProperties>
+  ) => void;
+  transformMode: 'translate' | 'rotate' | 'scale' | null;
 }
 
-const Primitive: React.FC<PrimitiveProps> = ({ node, isSelected, onClick }) => {
-  const { position, rotation, scale, dimensions = {} } = node.properties;
-  const color = isSelected ? '#2196f3' : '#ffffff';
+const Primitive: React.FC<PrimitiveProps> = ({
+  node,
+  isSelected,
+  onClick,
+  onTransformChange,
+  onMaterialChange,
+  transformMode,
+}) => {
+  const meshRef = useRef<THREE.Mesh>(null);
+  const { position, rotation, scale, dimensions = {}, material } = node.properties;
 
   const getMesh = () => {
     switch (node.type) {
@@ -58,18 +77,38 @@ const Primitive: React.FC<PrimitiveProps> = ({ node, isSelected, onClick }) => {
   };
 
   return (
-    <mesh
-      position={position}
-      rotation={rotation as [number, number, number]}
-      scale={scale}
-      onClick={(e) => {
-        e.stopPropagation();
-        onClick();
-      }}
-    >
-      {getMesh()}
-      <meshStandardMaterial color={color} />
-    </mesh>
+    <>
+      <mesh
+        ref={meshRef}
+        position={position}
+        rotation={rotation as [number, number, number]}
+        scale={scale}
+        onClick={(e) => {
+          e.stopPropagation();
+          onClick();
+        }}
+        castShadow
+        receiveShadow
+      >
+        {getMesh()}
+        <meshStandardMaterial
+          color={material.color}
+          metalness={material.metalness}
+          roughness={material.roughness}
+          emissive={new THREE.Color(material.emissive)}
+          emissiveIntensity={material.emissiveIntensity}
+          transparent={material.transparent}
+          opacity={material.opacity}
+        />
+      </mesh>
+      {isSelected && meshRef.current && (
+        <TransformControls
+          object={meshRef.current}
+          mode={transformMode}
+          onTransformChange={(type, value) => onTransformChange(node.id, type, value)}
+        />
+      )}
+    </>
   );
 };
 
@@ -77,26 +116,75 @@ interface ThreeSceneProps {
   nodes: ModelNode[];
   selectedNodeId: string | null;
   onNodeSelect: (id: string) => void;
+  onNodeTransform: (
+    id: string,
+    type: 'position' | 'rotation' | 'scale',
+    value: [number, number, number]
+  ) => void;
+  onMaterialChange: (
+    id: string,
+    materialProps: Partial<MaterialProperties>
+  ) => void;
+  transformMode: 'translate' | 'rotate' | 'scale' | null;
 }
 
 const ThreeScene: React.FC<ThreeSceneProps> = ({
   nodes,
   selectedNodeId,
   onNodeSelect,
+  onNodeTransform,
+  onMaterialChange,
+  transformMode,
 }) => {
+  const renderNode = (node: ModelNode) => {
+    if (node.type === 'Group') {
+      return node.children.map(child => renderNode(child));
+    }
+    return (
+      <Primitive
+        key={node.id}
+        node={node}
+        isSelected={node.id === selectedNodeId}
+        onClick={() => onNodeSelect(node.id)}
+        onTransformChange={onNodeTransform}
+        onMaterialChange={onMaterialChange}
+        transformMode={transformMode}
+      />
+    );
+  };
+
   return (
     <>
+      <color attach="background" args={['#1a1a1a']} />
+      <fog attach="fog" args={['#1a1a1a', 10, 50]} />
+      
       <ambientLight intensity={0.5} />
-      <pointLight position={[10, 10, 10]} />
-      <OrbitControls />
-      {nodes.map((node) => (
-        <Primitive
-          key={node.id}
-          node={node}
-          isSelected={node.id === selectedNodeId}
-          onClick={() => onNodeSelect(node.id)}
+      <directionalLight
+        position={[5, 5, 5]}
+        intensity={1}
+        castShadow
+        shadow-mapSize-width={2048}
+        shadow-mapSize-height={2048}
+      />
+      <directionalLight position={[-5, -5, -5]} intensity={0.2} />
+      
+      <Environment preset="city" />
+      
+      <mesh
+        rotation={[-Math.PI / 2, 0, 0]}
+        position={[0, -2, 0]}
+        receiveShadow
+      >
+        <planeGeometry args={[100, 100]} />
+        <meshStandardMaterial
+          color="#333333"
+          roughness={1}
+          metalness={0}
         />
-      ))}
+      </mesh>
+      
+      <OrbitControls makeDefault />
+      {nodes.map(node => renderNode(node))}
     </>
   );
 };

@@ -4,12 +4,16 @@
   width: 100vw;
   position: relative;
   overflow: hidden;
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+  color: #333;
 }
 
 .sidebar {
   min-width: 200px;
   max-width: 600px;
   background-color: #f5f5f5;
+  color: #333;
   border-right: 1px solid #ddd;
   display: flex;
   flex-direction: column;
@@ -23,6 +27,11 @@
   background-color: #eee;
   position: relative;
   overflow: hidden;
+  color: #333;
+}
+
+canvas {
+    background: #c2ecf6;
 }
 
 .primitive-controls {
@@ -91,6 +100,7 @@
   border-radius: 4px;
   transition: all 0.2s;
   background-color: white;
+  color: black;
   border: 1px solid #e0e0e0;
 }
 
@@ -160,4 +170,139 @@ h3 {
 .viewport > canvas {
   width: 100% !important;
   height: 100% !important;
+}
+
+.transform-controls {
+    position: fixed;
+    z-index: 9999;
+    right: 0;
+    bottom: 0;
+    padding: 1rem;
+    display: flex;
+    gap: 0.5rem;
+    border-bottom: 1px solid #ddd;
+}
+
+.transform-button {
+  flex: 1;
+  padding: 0.5rem;
+  background-color: #f0f0f0;
+  color: #333;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.transform-button.active {
+  background-color: #2196f3;
+  color: #333;
+  border-color: #1976d2;
+}
+
+.transform-button:hover {
+  background-color: #e0e0e0;
+  color: #333;
+}
+
+.transform-button.active:hover {
+  background-color: #1976d2;
+  color: white;
+}
+
+.tree-node-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.25rem;
+}
+
+.delete-button {
+  background: none;
+  border: none;
+  color: #666;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0 0.5rem;
+  visibility: hidden;
+}
+
+.tree-node:hover .delete-button {
+  visibility: visible;
+}
+
+.delete-button:hover {
+  color: #f44336;
+}
+
+.add-group-button {
+  width: 100%;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.2s;
+}
+
+.add-group-button:hover {
+  background-color: #388e3c;
+}
+
+.tree-node input {
+  width: 100%;
+  padding: 0.25rem;
+  border: 1px solid #2196f3;
+  border-radius: 2px;
+  font-size: inherit;
+}
+
+.tree-node input:focus {
+  outline: none;
+  border-color: #1976d2;
+}
+
+.material-controls {
+  padding: 1rem;
+  border-bottom: 1px solid #ddd;
+  display: none;
+}
+
+.material-controls h3 {
+  margin: 0 0 1rem 0;
+  font-size: 1rem;
+  color: #333;
+}
+
+.control-group {
+  margin-bottom: 1rem;
+}
+
+.control-group label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.control-group input[type="range"] {
+  flex: 1;
+}
+
+.control-group input[type="color"] {
+  width: 50px;
+  height: 25px;
+  padding: 0;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.control-group span {
+  min-width: 3em;
+  text-align: right;
+  color: #999;
 } 
